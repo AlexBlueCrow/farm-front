@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">用户登陆</h3>
       </div>
 
       <el-form-item prop="username">
@@ -40,26 +40,31 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+      <div>
+      <el-button :loading="loading" type="primary" style="width:60%;margin-bottom:30px;margin:0 auto;display:block" @click.native.prevent="handleLogin">登录</el-button>
       </div>
 
+      <div class='test'>
+      <el-button type="primary" @click="goTo" style="position:relative;top:10%;width:60%;margin-bottom:30px;display:block;margin:0 auto">新用户注册</el-button>
+      </div>
     </el-form>
+      
+      
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+
+import { validUsername } from '@/utils/validate';
+import axios from "axios";
+import { setToken } from '../../utils/auth';
+import { getToken } from '../../utils/auth';
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      if (value.length==0) {
         callback(new Error('Please enter the correct user name'))
       } else {
         callback()
@@ -74,8 +79,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: 'test',
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -105,23 +110,56 @@ export default {
         this.$refs.password.focus()
       })
     },
+   
     handleLogin() {
+      console.log('login')
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          console.log(this.loginForm.username,this.loginForm.password)
+          axios.get('http://localhost:8000/api/login/',{
+            params:{
+            username:this.loginForm.username,
+            password:this.loginForm.password,
+            }
+        }).then((response) => { 
+          console.log(response.data)
+          setToken(response.data.token)
+          let token=getToken()
+          axios.get('http://localhost:8000/api/getUserInfo/',{
+            params:{
+            token:token
+            }
+          }).then((response)=>{
+            
+            console.log(response.data)
+            
+            this.loading = true
+            this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {
             this.loading = false
           })
+
+            this.$router.push('/')
+          })
+        })
+          
         } else {
-          console.log('error submit!!')
+          console.log('格式错误')
           return false
         }
       })
-    }
+    },
+    goTo() {
+    console.log('redirect')
+    this.$router.push({name: 'register',params:{ id:'1'}});
+    },
+    goTocsv() {
+    this.$router.push({name: 'csv',params:{ id:'1'}});
   }
+  },
+  
 }
 </script>
 
@@ -140,6 +178,7 @@ $cursor: #fff;
 }
 
 /* reset element-ui css */
+
 .login-container {
   .el-input {
     display: inline-block;

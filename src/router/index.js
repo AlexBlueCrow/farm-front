@@ -33,10 +33,24 @@ import Layout from '@/layout'
 export const constantRoutes = [
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/login/login'),
+    name: 'login',
     hidden: true
   },
-
+  {
+    path: '/register',
+    component: () => import('@/views/register/index'),
+    name: 'register',
+    hidden: true
+  },
+  /*
+  {
+    path:'/csv',
+    component: () => import('@/views/csvupload/index.vue'),
+    name:'csv',
+    hidden: true
+  },
+  */
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -78,6 +92,18 @@ export const constantRoutes = [
   },
 
   {
+    path: '/order-inquire',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'order-inquire',
+        component: () => import('@/views/order-inquire/index'),
+        meta: { title: 'order', icon: 'form' }
+      }
+    ]
+  },
+  {
     path: '/form',
     component: Layout,
     children: [
@@ -89,65 +115,31 @@ export const constantRoutes = [
       }
     ]
   },
-
   {
-    path: '/nested',
+    path: '/test',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        path: 'index',
+        name: 'test',
+        component: () => import('@/views/test/index.vue'),
+        meta: { title: 'test', icon: 'example' }
       }
     ]
   },
-
+  {
+    path:'/upshelf',
+    component:Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'upshelf',
+        component: () => import('@/views/upshelf/index.vue'),
+        meta: { title: 'upshelf', icon: 'example'}
+      }
+    ]
+  },
+  
   {
     path: 'external-link',
     component: Layout,
